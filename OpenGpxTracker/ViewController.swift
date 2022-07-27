@@ -289,7 +289,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var isIPhoneX = false
     
     /// Compass View
-    @available(iOS 11, *)
+//    @available(iOS 11, *)
     lazy var compassButton = MKCompassButton(mapView: map)
     
     // Signal accuracy images
