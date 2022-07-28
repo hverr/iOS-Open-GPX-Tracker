@@ -21,11 +21,14 @@ let kCacheSection = 1
 /// Map Source Section Id in PreferencesTableViewController
 let kMapSourceSection = 2
 
+/// Offline Tiles Section Id in PreferencesTableViewController
+let kOfflineTilesSection = 3
+
 /// Activity Type Section Id in PreferencesTableViewController
-let kActivityTypeSection = 3
+let kActivityTypeSection = 4
 
 /// Default Name Section Id in PreferencesTableViewController
-let kDefaultNameSection = 4
+let kDefaultNameSection = 5
 
 /// Cell Id of the Use Imperial units in UnitsSection
 let kUseImperialUnitsCell = 0
@@ -102,7 +105,7 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
     /// Returns 4 sections: Units, Cache, Map Source, Activity Type
     override func numberOfSections(in tableView: UITableView?) -> Int {
         // Return the number of sections.
-        return 5
+        return 6
     }
     
     /// Returns the title of the existing sections.
@@ -113,6 +116,7 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
         case kUnitsSection: return NSLocalizedString("UNITS", comment: "no comment")
         case kCacheSection: return NSLocalizedString("CACHE", comment: "no comment")
         case kMapSourceSection: return NSLocalizedString("MAP_SOURCE", comment: "no comment")
+        case kOfflineTilesSection: return "Offline Tiles"
         case kActivityTypeSection: return NSLocalizedString("ACTIVITY_TYPE", comment: "no comment")
         case kDefaultNameSection: return NSLocalizedString("DEFAULT_NAME_SECTION", comment: "no comment")
         default: fatalError("Unknown section")
@@ -127,6 +131,7 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
         case kCacheSection: return 2
         case kUnitsSection: return 1
         case kMapSourceSection: return GPXTileServer.count
+        case kOfflineTilesSection: return 2
         case kActivityTypeSection: return CLActivityType.count
         case kDefaultNameSection: return 1
         default: fatalError("Unknown section")
@@ -188,6 +193,21 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
             cell.textLabel?.text = tileServer!.name
             if indexPath.row == preferences.tileServerInt {
                 cell.accessoryType = .checkmark
+            }
+        }
+        
+        if indexPath.section == kOfflineTilesSection {
+            switch indexPath.row {
+            case 0:
+                cell = UITableViewCell(style: .subtitle, reuseIdentifier: "OfflineTilesCell")
+                cell.textLabel?.text = "Load tiles..."
+                
+
+            case 1:
+                cell = UITableViewCell(style: .subtitle, reuseIdentifier: "OfflineTilesCell")
+                cell.textLabel?.text = "Clear"
+                cell.textLabel?.textColor = UIColor.red
+            default: fatalError("Unknown section")
             }
         }
         
@@ -292,6 +312,12 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
             
             //update map
             self.delegate?.didUpdateTileServer((indexPath as NSIndexPath).row)
+        }
+        
+        if indexPath.section == kOfflineTilesSection {
+            print("PreferenccesTableView Offline Tiles section Row at index:  \(indexPath.row)")
+            // TODO(hverr)
+            
         }
         
         if indexPath.section == kActivityTypeSection {
