@@ -62,6 +62,9 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
     /// Store cached size for reuse.
     var cachedSize = String()
     
+    // Compute once...
+    var cachedLocalTileStoreSize = String()
+    
     /// Does the following:
     /// 1. Defines the areas for navBar and the Table view
     /// 2. Sets the title
@@ -81,6 +84,8 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
         
         let fileSize = cache.diskCache.fileSize ?? 0
         cachedSize = Int(fileSize).asFileSize()
+        
+        cachedLocalTileStoreSize = Int(GPXLocalTileStore.storeSize() ?? 0).asFileSize()
     }
     
     /// Close this controller.
@@ -202,6 +207,7 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
             case 0:
                 cell = UITableViewCell(style: .subtitle, reuseIdentifier: "OfflineTilesCell")
                 cell.textLabel?.text = "Load tiles..."
+                cell.detailTextLabel?.text = cachedLocalTileStoreSize
                 
 
             case 1:
