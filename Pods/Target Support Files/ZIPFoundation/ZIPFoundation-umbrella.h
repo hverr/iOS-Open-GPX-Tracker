@@ -1,5 +1,5 @@
 #ifdef __OBJC__
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #else
 #ifndef FOUNDATION_EXPORT
 #if defined(__cplusplus)
@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double CoreGPXVersionNumber;
-FOUNDATION_EXPORT const unsigned char CoreGPXVersionString[];
+FOUNDATION_EXPORT double ZIPFoundationVersionNumber;
+FOUNDATION_EXPORT const unsigned char ZIPFoundationVersionString[];
 
