@@ -65,6 +65,14 @@ open class GPXLocalTileStore {
         }
     }
     
+    open class func clear() {
+        do {
+            try FileManager.default.removeItem(at: folderURL())
+        } catch {
+            print ("GPXLocalTileStore: clear: error: \(error)")
+        }
+    }
+    
     class func fileSizeForDirectory(at directoryURL: URL) throws -> UInt64 {
         
         func regularFileSize(url: URL) throws -> UInt64 {

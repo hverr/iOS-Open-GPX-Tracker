@@ -85,7 +85,7 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
         let fileSize = cache.diskCache.fileSize ?? 0
         cachedSize = Int(fileSize).asFileSize()
         
-        cachedLocalTileStoreSize = Int(GPXLocalTileStore.storeSize() ?? 0).asFileSize()
+        updateOfflineTilesSize(updateCell: false)
     }
     
     /// Close this controller.
@@ -335,7 +335,8 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
                                 documentPicker.delegate = self
                 present(documentPicker, animated: true, completion: nil)
             case 1:
-                break
+                GPXLocalTileStore.clear()
+                updateOfflineTilesSize(updateCell: true)
             default:
                 fatalError("didSelectRowAt: Unknown cell")
             }
@@ -366,6 +367,16 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         for url in urls {
             GPXLocalTileStore.loadZipFile(url: url)
+        }
+        updateOfflineTilesSize(updateCell: true)
+    }
+    
+    func updateOfflineTilesSize(updateCell: Bool) {
+        cachedLocalTileStoreSize = Int(GPXLocalTileStore.storeSize() ?? 0).asFileSize()
+        
+        if updateCell {
+            let c = tableView.cellForRow(at: IndexPath(row: 0, section: kOfflineTilesSection))
+            c?.detailTextLabel?.text = self.cachedLocalTileStoreSize
         }
     }
 }
