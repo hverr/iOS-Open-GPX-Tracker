@@ -11,6 +11,7 @@ import Foundation
 import UIKit
 import CoreLocation
 import MapCache
+import UniformTypeIdentifiers
 
 /// Units Section Id in PreferencesTableViewController
 let kUnitsSection = 0
@@ -47,7 +48,7 @@ let kClearCacheCell = 1
 /// Preferences are kept on UserDefaults with the keys `kDefaultKeyTileServerInt` (Int)
 /// and `kDefaultUseCache`` (Bool)
 ///
-class PreferencesTableViewController: UITableViewController, UINavigationBarDelegate {
+class PreferencesTableViewController: UITableViewController, UINavigationBarDelegate, UIDocumentPickerDelegate {
     
     /// Delegate for this table view controller.
     weak var delegate: PreferencesTableViewControllerDelegate?
@@ -317,7 +318,21 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
         if indexPath.section == kOfflineTilesSection {
             print("PreferenccesTableView Offline Tiles section Row at index:  \(indexPath.row)")
             // TODO(hverr)
-            
+            switch indexPath.row {
+            case 0:
+                let documentPicker = {
+                    if #available(iOS 14.0, *) {
+                        return UIDocumentPickerViewController(forOpeningContentTypes: [UTType.zip]) } else {
+                            return UIDocumentPickerViewController(documentTypes: ["public.zip-archive"], in: UIDocumentPickerMode.import);
+                        }
+                }()
+                                documentPicker.delegate = self
+                present(documentPicker, animated: true, completion: nil)
+            case 1:
+                break
+            default:
+                fatalError("didSelectRowAt: Unknown cell")
+            }
         }
         
         if indexPath.section == kActivityTypeSection {
@@ -340,5 +355,11 @@ class PreferencesTableViewController: UITableViewController, UINavigationBarDele
         
         //unselect row
         tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        for url in urls {
+            GPXLocalTileStore.loadZipFile(url: url)
+        }
     }
 }

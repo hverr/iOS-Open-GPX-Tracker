@@ -19,4 +19,8 @@ open class GPXLocalTileStore {
         return 0;
     }
     
+    open class func loadZipFile(url: URL) {
+        print("GPXLocalTileStore: loadZipFile \(url)")
+    }
+    
 }
