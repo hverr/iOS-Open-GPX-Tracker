@@ -85,6 +85,7 @@ open class MapCache : MapCacheProtocol {
     public func fetchTileFromServer(at path: MKTileOverlayPath,
                              failure fail: ((Error?) -> ())? = nil,
                              success succeed: @escaping (Data) -> ()) {
+        print("path: z=\(path.z) x=\(path.x) y=\(path.y)")
         let url = self.url(forTilePath: path)
         print ("MapCache::fetchTileFromServer() url=\(url)")
         let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
@@ -98,11 +99,12 @@ open class MapCache : MapCacheProtocol {
                 fail!(nil)
                 return
             }
-            guard let httpResponse = response as? HTTPURLResponse,
-            (200...299).contains(httpResponse.statusCode) else {
-                print("!!! MapCache::fetchTileFromServer statusCode != 2xx url= \(url)")
-                fail!(nil)
-                return
+            if let httpResponse = response as? HTTPURLResponse {
+                if !(200...299).contains(httpResponse.statusCode) {
+                    print("!!! MapCache::fetchTileFromServer statusCode != 2xx url= \(url)")
+                    fail!(nil)
+                    return
+                }
             }
             
             succeed(data)
@@ -125,7 +127,7 @@ open class MapCache : MapCacheProtocol {
        // Tries to load the tile from the server.
        // If it fails returns error to the caller.
         let tileFromServerFallback = { () -> () in
-            print ("MapCache::tileFromServerFallback:: key=\(key)" )
+//            print ("MapCache::tileFromServerFallback:: key=\(key)" )
             self.fetchTileFromServer(at: path,
                                 failure: {error in result(nil, error)},
                                 success: {data in

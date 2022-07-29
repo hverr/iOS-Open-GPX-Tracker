@@ -38,6 +38,9 @@ enum GPXTileServer: Int {
     /// OpenTopoMap tile server
     case openTopoMap
     
+    /// Local tiles
+    case localTileStore
+    
     ///String that describes the selected tile server.
     var name: String {
         switch self {
@@ -47,6 +50,7 @@ enum GPXTileServer: Int {
         case .cartoDB: return "Carto DB"
         case .cartoDBRetina: return "Carto DB (Retina resolution)"
         case .openTopoMap: return "OpenTopoMap"
+        case .localTileStore: return "Offline Tiles"
         }
     }
     
@@ -59,8 +63,13 @@ enum GPXTileServer: Int {
         case .cartoDB: return "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
         case .cartoDBRetina: return "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png"
         case .openTopoMap: return "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+        case .localTileStore:
+            let url = String(format: "%@tiles/{z}/{x}/{y}.png", GPXLocalTileStore.folderURL().absoluteString)
+            print("LOCAL TILE STORE URL: \(url)")
+            return url
         }
     }
+
     
     /// In the `templateUrl` the {s} means subdomain, typically the subdomains available are a,b and c
     /// Check the subdomains available for your server.
@@ -76,6 +85,7 @@ enum GPXTileServer: Int {
         case .openStreetMap: return ["a", "b", "c"]
         case .cartoDB, .cartoDBRetina: return ["a", "b", "c"]
         case .openTopoMap: return ["a", "b", "c"]
+        case .localTileStore: return []
         // case .AnotherMap: return ["a","b"]
         }
     }
@@ -102,6 +112,8 @@ enum GPXTileServer: Int {
             return 21
         case .openTopoMap:
             return 17
+        case .localTileStore:
+            return 16
         // case .AnotherMap: return 10
         }
     }
@@ -125,6 +137,8 @@ enum GPXTileServer: Int {
             return 0
         case .openTopoMap:
             return 0
+        case .localTileStore:
+            return 0
         // case .AnotherMap: return ["a","b"]
         }
     }
@@ -145,5 +159,5 @@ enum GPXTileServer: Int {
     }
 
     /// Returns the number of tile servers currently defined
-    static var count: Int { return GPXTileServer.openTopoMap.rawValue + 1}
+    static var count: Int { return GPXTileServer.localTileStore.rawValue + 1}
 }
